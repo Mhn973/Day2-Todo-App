@@ -2,25 +2,26 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { XMarkIcon,CheckIcon ,PencilIcon} from "@heroicons/react/24/solid";
 import {v4 as uuidv4} from 'uuid';
+import IconButton from "./IconButton";
 export default function TodoList() {
   const [tasks, setTasks] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [editingTask,setEditingTask]=useState({});
-  const [isLoaded, setIsLoaded] = useState(false);
+  
 
   useEffect(() => {
     const storedTasks = JSON.parse(localStorage.getItem("tasks"));
     if (storedTasks) {
       setTasks(storedTasks);
     }
-    setIsLoaded(true); 
+  
   }, []);
 
   useEffect(() => {
-    if (isLoaded) {
+    if (tasks.length>0) {
       localStorage.setItem("tasks", JSON.stringify(tasks));
     }
-  }, [tasks, isLoaded]);
+  }, [tasks]);
   const addTask = () => {
     if (inputValue.trim() && !tasks.some((task) => task.value === inputValue.trim())) {
       const newValue={
@@ -109,42 +110,46 @@ export default function TodoList() {
                       autoFocus
                       className="flex-1 mr-2 border border-gray-400 rounded px-2 py-1"
                     />
-                    <button
-                      onClick={() => handleUpdateTask(editingTask)}
-                      aria-label="Complete task"
-                    >
-                      <CheckIcon
-                        className={` h-7 w-7`}
-                      />
-                    </button>
+
+                    <IconButton
+                      Icon={CheckIcon}
+                      Variant="nuetral"
+                      Size="md"
+                      Click={() => handleUpdateTask(editingTask)}
+                      Title="Update Task"
+                      hoverVariant="nuetral"
+                    />
                   </>
                 ) : (
                   <>
                     <span>{task.value}</span>
                     <div>
-                      <button
-                        onClick={() => handleEdit(task)}
-                        aria-label="Edit Task"
-                        title="Edit Task"
-                      >
-                        <PencilIcon className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => handleCompleteChange(task.id)}
-                        aria-label="Complete task"
-                      >
-                        <CheckIcon
-                          className={`${
-                            task.completed ? "text-green-500" : "text-black"
-                          } h-6 w-6`}
-                        />
-                      </button>
-                      <button
-                        onClick={() => deleteTask(task.id)}
-                        aria-label="Delete task"
-                      >
-                        <XMarkIcon className="h-6 w-6  text-black hover:text-red-500" />
-                      </button>
+                      <IconButton
+                        Icon={PencilIcon}
+                        Variant="nuetral"
+                        Size="md"
+                        Click={() => handleEdit(task)}
+                        Title="Edit Task"
+                        hoverVariant="nuetral"
+                      />
+
+                      <IconButton
+                        Icon={CheckIcon}
+                        Variant={`${task.completed ? "success" : "nuetral"}`}
+                        Size="md"
+                        Click={() => handleCompleteChange(task.id)}
+                        Title="Edit Task"
+                        hoverVariant="nuetral"
+                      />
+                     
+                      <IconButton
+                        Icon={XMarkIcon}
+                        Variant= "nuetral"
+                        Size="md"
+                        Click={() => deleteTask(task.id)}
+                        Title="Delete Task"
+                        hoverVariant="fail"
+                      />
                     </div>
                   </>
                 )}
